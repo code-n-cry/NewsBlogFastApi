@@ -14,8 +14,14 @@ class UserBase(pydantic.BaseModel):
 
 class UserCreate(pydantic.BaseModel):
     nickname: str
-    email: str
+    email: pydantic.EmailStr
     password: str
+
+
+class User(pydantic.BaseModel):
+    nickname: str
+    email: pydantic.EmailStr
+    is_active: bool
 
 
 class UserUpdate(pydantic.BaseModel):
@@ -24,17 +30,14 @@ class UserUpdate(pydantic.BaseModel):
 
 
 class TokenBase(pydantic.BaseModel):
-    token: pydantic.UUID4 = Field(..., alias="acces_token")
-    expires: datetime
-    token_type: Optional[str] = "bearer"
-
-    class Config:
-        allow_population_by_field_name = True
-
-    @validator("token")
-    def hexify_token(cls, value):
-        return value.hex
+    access_token: str
+    token_type: str
 
 
-class User(UserBase):
-    token: TokenBase = {}
+class TokenData(pydantic.BaseModel):
+    username: Optional[str] = None
+
+
+class UserPublic(User):
+    access_token: Optional[TokenBase]
+        
