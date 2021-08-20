@@ -19,12 +19,4 @@ table_of_users = Table(
     sql.Column("is_active", sql.Boolean, server_default=expression.true(), nullable=False),
     sql.Column("is_superuser", sql.Boolean, default=False, nullable=False)
 )
-table_of_tokens = Table(
-    "tokens",
-    metadata,
-    sql.Column("id", sql.Integer, primary_key=True, autoincrement=True),
-    sql.Column("token", UUID(as_uuid=False), nullable=False, unique=True, index=True),
-    sql.Column("expires", sql.DateTime),
-    sql.Column("user_id", sql.ForeignKey("users.id"))
-)
 metadata.create_all(engine)

@@ -1,8 +1,6 @@
+from pydantic.errors import SetError
 import pydantic
-from pydantic.class_validators import validator
-from pydantic.fields import Field
 from typing import Optional
-from datetime import datetime
 
 
 class UserBase(pydantic.BaseModel):
@@ -18,10 +16,10 @@ class UserCreate(pydantic.BaseModel):
     password: str
 
 
-class User(pydantic.BaseModel):
+class UserPublic(pydantic.BaseModel):
     nickname: str
     email: pydantic.EmailStr
-    is_active: bool
+    is_active: bool = True  
 
 
 class UserUpdate(pydantic.BaseModel):
@@ -38,6 +36,6 @@ class TokenData(pydantic.BaseModel):
     username: Optional[str] = None
 
 
-class UserPublic(User):
-    access_token: Optional[TokenBase]
-        
+class UserLogin(pydantic.BaseModel):
+    email: str
+    password: str
