@@ -8,6 +8,7 @@ from sqlalchemy import select
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def hash_password(password: str):
+    
     return pwd_context.hash(password)
 
 
@@ -24,10 +25,15 @@ async def get_user_by_email(email):
     return user
 
 
+async def edit_user_nickname(new_nickname, email):
+    query = table_of_users.update().values(nickname=new_nickname).where(table_of_users.c.email == email)
+    await database.execute(query)
+
+
 async def authenticate_user(username, password):
     user = await get_user_by_email(username)
     if user:
-        query = select([table_of_users.c.hashed_password]).where(table_of_users.c.email == user.email)
+        query = select([table_of_users.c.hashed_password]).select_from(table_of_users).where(table_of_users.c.email == user.email)
         hashed_password = await database.fetch_one(query)
         if validate_password(password, dict(hashed_password)["hashed_password"]):
             return user

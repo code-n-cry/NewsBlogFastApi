@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <head>
     <meta charset="utf-8">
-    <meta lang="ru"
+    <meta lang="ru">
     <meta name="viewport" content-width="device-width">
     <link rel="icon" href="{{ url_for('static', path='/img/logo.png') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/light-theme.css') }}">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+     integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="{{ url_for('static', path='/script/script.js') }}"></script>
 </head>
 <body>
     <title>{{ title }}</title>
@@ -16,23 +21,35 @@
             <ul id="nav-mobile" class="right hide-on-med-and-down">
                 <li><a href="/">Лента</a></li>
                 <li><a href="/my_posts">Мои посты</a></li>
-                <li><a class="dropdown-trigger" href="#" data-target="dropdown1">Опции ▼</a></li>
-                <ul id='dropdown1' class='dropdown-content'>
-                    <li><a href="/settings" class="de">Настройки</a></li>
-                    <li><a href="#!" class="de">Тема</a></li>
-                    <li><a href="/profile" class="de">Профиль</a></li>
-                  </ul>
+                <li><a href="/profile">Профиль</a></li>
           </ul>
         </div>
     </nav>
-    {% block content %}
-    <main>
-        <p>Hello!</p>
-    </main>
-    {% endblock %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
-     integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
-      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script src="{{ url_for('static', path='/script/script.js') }}"></script>
+    <div class="main">
+        {% block content %}
+            <p id='totalCount'>Всего постов: {{ total_count }}</p>
+            <div class="container">
+                <div class="row">
+                    <h3 id="all_posts" align="center">Все посты:</h3>
+                </div>
+                {% for i in all_posts %}
+                    <div class="row">
+                        <h6><b>{{ i['title'] }}</b> от <b>{{ i['nickname'] }}</b></h6>
+                    </div>
+                    <div class="content">
+                        <div class="row">
+                            <span>
+                                {{ i['content'] }}
+                            </span>
+                        </div>
+                        {% if i['image'] != None %}
+                            <div class="row">
+                                <img class="materialboxed" height="450" width="450" alt="Тут была картинка!" src="{{ url_for('static', path=i['image']) }}">
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endblock %}
+    </div>
 </body>

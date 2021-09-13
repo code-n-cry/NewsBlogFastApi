@@ -1,0 +1,153 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="container">
+    <h3 align="center">Создание поста</h3>
+    <div class="row">
+        <div class="input-field col s6 push-s3">
+            <input class="validate" type="text" id="title">
+            <label for="title">Название: (не больше трех слов!)</label>
+            <span class="helper-text" id="title_e"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="input-field col s12">
+            <textarea id="content" class="materialize-textarea"></textarea>
+            <label for="content">Содержание: (не более 1000 символов!)</label>
+            <span class="helper-text" id="content_e"></span>
+        </div>
+    </div>
+    <div class="row">
+        <form action="#">
+            <div class="file-field input-field">
+              <div class="btn">
+                <span>Добавить</span>
+                <input type="file" id="file-input" accept="image/*" onchange="addFilesToCarousel(this.files)">
+              </div>
+              <div class="file-path-wrapper">
+                <input class="file-path validate" type="text" placeholder="Загрузите картинку, если она нужна в посте(только одну)!">
+              </div>
+            </div>
+          </form>
+    </div>
+    <div class="row">
+        <div class="slider" id="carousel">
+            <ul class="slides" id="slides">
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+                <button type="submit" class="col s2 btn waves-effect waves-light round" id="edit-btn">Изменить
+                    <i class="material-icons right">send</i>
+                </button>
+                <button type="submit" class="btn red accent-4 waves-effect waves-light round" id="delete-btn">Удалить
+                    <i class="material-icons right"></i>
+                </button>
+    </div>
+</div>
+<script type="text/javascript">
+    var json_data = {}
+    const file_input = document.getElementById('file-input')
+    const carousel_div = document.getElementById('slides')
+    const current_post_id = document.URL.split('/')[document.URL.split('/').length - 1]
+    fetch('/users/me').then((response) => {
+        return response.status
+    }).then(function(status) {
+        if (status === 200) {
+            fetch(`/post/${current_post_id}/author`).then(
+                (function(response) {
+                    if (response.status === 403) {
+                        window.location.href = '/forbidden'
+                    } else {
+                        fetch(`/post/${current_post_id}`).then((response) => { return response.json() }).then(function(data){
+                            console.log(data)
+                            document.getElementById('title').value = data['title']
+                            document.getElementById('content').value = data['content']
+                            if (data['image']){
+                                let li = document.createElement('li')
+                                li.innerHTML = `<img class="materialboxed" height="450" width="450" alt="Тут была картинка!" src='{{ url_for("static", path="` + data[`image`] + `") }}'>`
+                                carousel_div.appendChild(li)
+                            }
+                        })
+                    }
+                }
+            ))
+        } else {
+            localStorage.setItem('redirectTo', document.URL)
+            window.location.href = '/unauthorized'
+        }
+    })
+    var edit_btn = document.getElementById('edit-btn')
+    edit_btn.onclick = function() {
+        document.getElementById('title_e').innerHTML = ''
+        document.getElementById('content_e').innerHTML = ''
+        var news_title = document.getElementById('title').value
+        var news_content = document.getElementById('content').value
+        if (news_title.split(' ').length > 4) {
+            document.getElementById('title_e').style.color = 'red'
+            document.getElementById('title_e').innerHTML = '<b>В названии больше трёх слов!</b>'
+            return
+        } 
+        if (news_content.length > 500) {
+            document.getElementById('content_e').style.color = 'red'
+            document.getElementById('content_e').innerHTML = '<b>В теле поста больше 1000 символов!</b>'
+            return
+        } 
+        json_data['title'] = news_title
+        json_data['content'] = news_content
+        var json_post = JSON.stringify(json_data)
+        fetch(`/post/${current_post_id}`, {
+            method: 'PUT', 
+            body: json_post,
+            headers: {
+                'Content-Type': 'Application/json'
+            }
+        }).then(function(response) {
+            if (response.status == 200) {
+                document.location.href = '/'
+            }
+        })   
+    }
+    var delete_btn = document.getElementById('delete-btn')
+    delete_btn.onclick = function() {
+        if (window.confirm('Точно хотите удалить?')) {
+            fetch(`/post/${current_post_id}`, {
+                method: 'DELETE'}).then(function(response) {
+                    if (response.status === 200) {
+                        window.location.href = '/'
+                    }
+                })
+        }
+    }
+    function addFilesToCarousel(files) {
+        var is_slider_exist = true
+        json_data['image'] = []
+        document.getElementById('slides').innerHTML = ''
+        if (is_slider_exist === false) {
+            carousel_div.style.display = 'block'
+        }
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            if (!file.type.startsWith('image/')){ continue }
+            var new_carousel_el = document.createElement('li')
+            var el_img = document.createElement("img");
+            el_img.file = file;
+            new_carousel_el.appendChild(el_img)
+            carousel_div.appendChild(new_carousel_el);
+            var reader = new FileReader();
+            reader.onload = (function(aImg) { return function(e) {
+                var tempFileData = e.target.result
+                aImg.src = tempFileData
+                json_data['image'].push({'filename': file.name, 'data': tempFileData.split(",")[1]})
+            }; })(el_img);
+            reader.readAsDataURL(file);
+            $('.slider').removeClass('initialized');
+            $('.slider').slider({indicators: true});
+            document.addEventListener('DOMContentLoaded', function() {
+                var elems = document.querySelectorAll('.slider');
+                var options = {indicators: true}
+                var instances = M.Slider.init(elems, options);
+              });
+        }
+    }</script>
+{% endblock %}

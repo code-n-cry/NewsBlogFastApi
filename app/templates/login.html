@@ -1,0 +1,27 @@
+{% extends "index.html" %}
+{% block content %}
+<div class="main">
+<div class="container">
+    <div class="row">
+        <div class="col s12">
+            <input placeholder="Email" id="email" type="email" class="validate">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12">
+            <input placeholder="Пароль" id="password" type="password" class="validate">
+        </div>
+        <span style="color: red" class="helper-text" data-error="wrong" data-success="right" id="pass-errors"></span>
+    </div>
+    <div class="row">
+        <div class="col s3">
+                <button type="submit" class="btn waves-effect waves-light" id="login-btn">Вход
+                    <i class="material-icons right">send</i>
+                </button>
+        </div>
+    </div>
+    <script type="text/javascript" src="{{ url_for('static', path='/script/login.js') }}"></script>
+</div>
+</div>
+
+{% endblock %}

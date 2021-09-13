@@ -1,0 +1,25 @@
+.brand-logo {
+    padding-left: 0.3vw !important;
+    padding-top: 0.4vh !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+}
+.nav {
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+}
+.content {
+    border: 1.5px solid white;
+    padding: 0.15vh;
+    margin-top: 0;
+}
+#dropdown1 li {
+    background-color: #7e57c2;
+}
+.de {
+    color: black !important;
+}
+main {
+    background-color:  	#2a2e30 !important;
+    color: white;
+}

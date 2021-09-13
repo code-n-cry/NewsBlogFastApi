@@ -22,7 +22,12 @@ btn.onclick = function() {
                     body: json_data
                 }).then(function(response){
                     if (response.status == 200){
-                        document.location.href = '/'
+                        if (localStorage.getItem('redirectTo') != null) {
+                            document.location.href = localStorage.getItem('redirectTo')
+                            localStorage.removeItem('redirectTo')
+                        } else {
+                            document.location.href = '/'
+                        }
                     }
                 })
                 } else {

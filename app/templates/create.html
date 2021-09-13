@@ -1,0 +1,47 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="container">
+    <h3 align="center">Создание поста</h3>
+    <div class="row">
+        <div class="input-field col s6 push-s3">
+            <input class="validate" type="text" id="title">
+            <label for="title">Название: (не больше трех слов!)</label>
+            <span class="helper-text" id="title_e"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="input-field col s12">
+            <textarea id="content" class="materialize-textarea"></textarea>
+            <label for="content">Содержание: (не более 1000 символов!)</label>
+            <span class="helper-text" id="content_e"></span>
+        </div>
+    </div>
+    <div class="row">
+        <form action="#">
+            <div class="file-field input-field">
+              <div class="btn">
+                <span>Добавить</span>
+                <input type="file" id="file-input" accept="image/*" onchange="addFilesToCarousel(this.files)">
+              </div>
+              <div class="file-path-wrapper">
+                <input class="file-path validate" type="text" placeholder="Загрузите картинку, если она нужна в посте(только одну)!">
+              </div>
+            </div>
+          </form>
+    </div>
+    <div class="row">
+        <div class="slider" id="carousel">
+            <ul class="slides"  style="display: none;" id="slides">
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s3">
+                <button type="submit" class="btn waves-effect waves-light" id="create-btn">Создать
+                    <i class="material-icons right">send</i>
+                </button>
+        </div>
+</div>
+<script type="text/javascript" src="{{ url_for('static', path='script/create_post.js') }}"></script>
+{% endblock %}

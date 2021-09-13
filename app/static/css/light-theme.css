@@ -8,14 +8,19 @@
     padding-bottom: 0 !important;
     margin-bottom: 0 !important;
 }
-main p{
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-    background-color: #3b444b !important;
+.content {
+    border: 1.5px solid black;
+    padding: 0.15vh;
+    margin-bottom: 0.3vh;
 }
 #dropdown1 li {
     background-color: #7e57c2;
 }
 .de {
     color: white !important;
+}
+.round {
+    border-radius: 5px;
+    border: 1px solid black;
+    margin-right: 0.3vw;
 }

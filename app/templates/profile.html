@@ -1,0 +1,50 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="main">
+<div class="container">
+    <h3 align="center">Ваши данные:</h3>
+    <div class="row">
+        <div class="col s2">
+          <h5>Никнейм: </h5>
+        </div>
+        <div class="input-field col s7">
+          <input id="nickname" type="text" class="validate">
+        </div>
+    </div>
+    <div class="row">
+        <button data-target="modal1" class="btn modal-trigger">Изменить</button>
+        <div id="modal1" class="modal">
+          <div class="modal-content">
+            <h4>Изменить никнейм</h4>
+            <p>Новый никнейм: </p>
+            <div class="input-field">
+              <input id="new_nickname" type="text" class="validate">
+            </div>
+            <p>Пароль: </p>
+            <div class="input-field">
+              <input id="password" type="password" class="validate">
+            </div>
+            <span class="password_error" id="password_error"></span>
+          </div>
+          <div class="modal-footer">
+            <button class="waves-effect waves-light btn" id="change">Изменить</button>
+          </div>
+        </div>
+      </div>
+      <h3 align="center">Настройки:</h3>
+      <div class="row">
+        <div class="switch">
+          <label>
+            Светлая
+            <input type="checkbox" id="theme" >
+            <span class="lever"></span>
+            Тёмная
+          </label>
+        </div>
+      </div>
+      
+    <script type="text/javascript" src="{{ url_for('static', path='/script/profile.js') }}"></script>
+</div>
+</div>
+{% endblock %}

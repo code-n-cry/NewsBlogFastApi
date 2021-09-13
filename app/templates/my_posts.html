@@ -1,10 +1,65 @@
 {% extends "index.html" %}
 
 {% block content %}
-    <div class="container">
-        <div class="name" id="name">
+<div class="main">
+    <div class="container" id="container">
+        <div class="row" id="name">
             <h3 align="center" id="name1"></h3>
         </div>
+        <div class="row" id="all_posts">
+
+        </div>
+        <div class="row">
+            <a href="/create" class="col s2 push-s5 btn waves-effect waves-light">Создать пост</a>
+        </div>
     </div>
-    <script type="text/javascript" src="{{ url_for('static', path='/script/my_posts.js') }}"></script>
+</div>
+<script type="text/javascript">
+    fetch('/users/me')
+        .then(function (response) {
+            if (response.status === 200) {
+                fetch('/posts/me')
+                    .then((response) => { return response.json() })
+                    .then(function (data) {
+                        document.getElementById('name1').innerHTML = `Всего постов: ${data['total_count']}`
+                        var all_div = document.getElementById('all_posts')
+                        for (i = 0; i < data['results'].length; i++) {
+                            let header_row = document.createElement('div')
+                            header_row.classList.add('row')
+                            let header = document.createElement('h6')
+                            header.innerHTML = `<b>${data['results'][i]['title']}</b>`
+                            header_row.appendChild(header)
+                            all_div.appendChild(header_row)
+                            var content_div = document.createElement('div')
+                            content_div.classList.add('content')
+                            let content_row = document.createElement('div')
+                            content_row.classList.add('row')
+                            let content_span = document.createElement('span')
+                            content_span.textContent = data['results'][i]['content']
+                            content_row.appendChild(content_span)
+                            content_div.appendChild(content_row)
+                            if ('image' in data['results'][i]) {
+                                let new_row = document.createElement('div')
+                                new_row.classList.add('row')
+                                new_row.innerHTML = `<img class="materialboxed" height="450" width="450" alt="Тут была картинка!" src='{{ url_for("static", path="` + data[`results`][i][`image`] + `") }}'>`
+                                content_div.appendChild(new_row)
+                            }
+                            let btns_row = document.createElement('div')
+                            btns_row.classList.add('row')
+                            let edit_button = document.createElement('a')
+                            edit_button.href = `/my_post/${data['results'][i]['id']}`
+                            edit_button.text = 'Изменить/удалить'
+                            edit_button.classList.add('col', 's4', 'btn', 'cyan', 'waves-effect', 'round')
+                           btns_row.appendChild(edit_button)
+                            all_div.appendChild(content_div)
+                            all_div.appendChild(btns_row)
+                        }
+                    })
+            } else {
+                localStorage.setItem('redirectTo', '/my_posts')
+                document.location.href = '/unauthorized'
+            }
+        })
+        
+</script>
 {% endblock %}
