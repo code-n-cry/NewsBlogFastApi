@@ -1,0 +1,16 @@
+/email_validator/
+/venv/
+/dns/
+/pydantic/
+/pydantic-1.8.2.dist-info/
+/app/Scripts/
+/bin/
+/idna-3.2.dist-info/
+/email_validator-1.1.3.dist-info/
+/typing_extensions.py
+/app/Lib/
+/idna/
+/typing_extensions-3.10.0.0.dist-info/
+/dnspython-2.1.0.dist-info/
+/app/Include/
+/.idea/
