@@ -25,3 +25,5 @@ I didn't developed:
   <li>More tests</li>
   <li>Change themes</li>
 </ul>
+<br>
+I did this project to learn more about FastApi, JS, python and CSS
