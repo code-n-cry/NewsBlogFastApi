@@ -1,0 +1,7 @@
+fastapi
+pydantic
+fastapi-jwt-auth
+sqlalchemy
+databases
+pytest
+hashlib

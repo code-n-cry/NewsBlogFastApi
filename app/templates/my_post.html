@@ -65,7 +65,7 @@
                             document.getElementById('content').value = data['content']
                             if (data['image']){
                                 let li = document.createElement('li')
-                                li.innerHTML = `<img class="materialboxed" height="450" width="450" alt="Тут была картинка!" src='{{ url_for("static", path="` + data[`image`] + `") }}'>`
+                                li.innerHTML = `<img alt="Тут была картинка!" src='{{ url_for("static", path="` + data[`image`] + `") }}'>`
                                 carousel_div.appendChild(li)
                             }
                         })

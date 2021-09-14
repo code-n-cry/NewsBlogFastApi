@@ -1,24 +1,27 @@
-from pydantic.errors import SetError
 import pydantic
 from typing import Optional
+
+
+class EmailStr(str):  # type: ignore
+    pass
 
 
 class UserBase(pydantic.BaseModel):
     id: int
     nickname: str
-    email: pydantic.EmailStr
+    email: EmailStr
     is_superuser: bool = False
 
 
 class UserCreate(pydantic.BaseModel):
     nickname: str
-    email: pydantic.EmailStr
+    email: EmailStr
     password: str
 
 
 class UserPublic(pydantic.BaseModel):
     nickname: str
-    email: pydantic.EmailStr
+    email: EmailStr
     is_active: bool = True  
 
 

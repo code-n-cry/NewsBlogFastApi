@@ -75,7 +75,8 @@ async def get_my_posts(user_id):
 
 async def delete_post(post_id):
     query = table_of_posts.delete().where(table_of_posts.c.id == post_id)
-    return await database.execute(query)
+    deleted = await database.execute(query)
+    return deleted
 
 
 async def get_posts():

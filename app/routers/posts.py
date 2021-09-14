@@ -1,5 +1,5 @@
 from app.schemas.posts import PostDetailsBase, PostBase
-from app.data import user
+from app.data import user, post
 from app.config import database
 from app.utils import posts as post_utils
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -61,7 +61,15 @@ async def update_post(post_id: int, post_data: PostBase, authorize: AuthJWT = De
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You don't have access to modify this post",
         )
-
+    if post_data.image:
+        image_hash_name =  '/img/' + hashlib.sha256((current_user_email + post_data.image[0]['filename']).encode('utf-8')).hexdigest() + '.jpg'
+        if dict(post)['image']:
+            print(image_hash_name)
+            image_hash_name = dict(post)['image']
+            for file in post_data.image:
+                with open(f'app/static{image_hash_name}', mode='wb') as new_img:
+                    new_img.write(base64.b64decode(file['data']))
+        post_data.image = image_hash_name
     await post_utils.update_post(post_id=post_id, post=post_data)
     return await post_utils.get_post(post_id)
 
@@ -72,10 +80,11 @@ async def delete_post(post_id: int, authorize: AuthJWT = Depends()):
     current_user_email = authorize.get_jwt_subject()
     query = select([user.table_of_users.c.id]).select_from(user.table_of_users).where(user.table_of_users.c.email == current_user_email)
     current_user_id = await database.fetch_one(query)
-    if await post_utils.get_posts_author(current_user_id, post_id):
+    print(await post_utils.get_posts_author(current_user_id, post_id))
+    if await post_utils.get_posts_author(dict(current_user_id)['id'], post_id):
         await post_utils.delete_post(post_id)
         return {'200': 'OK'}
-    return {'401': 'unathorized'}
+    raise HTTPException(status_code=403, detail="You don't have access to delete this post")
 
 
 @router.get('/post/{post_id}/author')
@@ -86,5 +95,5 @@ async def get_post_author(post_id: int, authorize: AuthJWT = Depends()):
     current_user_id = await database.fetch_one(query)
     if await post_utils.get_posts_author(dict(current_user_id)['id'], post_id):
         return {'200': 'OK'}
-    raise HTTPException(403, detail={'Forbidden'})
+    raise HTTPException(403, detail="You aren't after of this post!")
     
