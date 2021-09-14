@@ -10,6 +10,7 @@ Backend technologies💻:
 Frontend technologies👀:
 <ul>
   <li><b>just javascript..</b></li>
+  <li><b>HTML</b> and <b>CSS</b> of course</li>
 </ul><br>
 Test techonologies📜: 
   <a href="https://fastapi.tiangolo.com/ru/tutorial/testing/" target="_blank"><b>FastAPI test client</b></a> and <b>PyTest</b><br>
@@ -26,4 +27,4 @@ I didn't developed:
   <li>Change themes</li>
 </ul>
 <br>
-I did this project to learn more about FastApi, JS, python and CSS
+I did this project to learn more about <b>FastApi</b>, <b>JS</b>, <b>Python</b> and <b>CSS</b>
