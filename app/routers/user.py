@@ -30,7 +30,7 @@ def get_config():
 @router.post("/signup", response_model=users.UserPublic)
 async def create_user(user: users.UserCreate):
     if len(user.password) < 5 or not user.password.isascii():
-        raise HTTPException(status_code=400, detail="Iincorrect password!")
+        raise HTTPException(status_code=400, detail="Incorrect password!")
     if await users_utils.get_user_by_email(user.email):
         raise HTTPException(status_code=400, detail="Email already exists!")
     return await users_utils.create_user(user=user)

@@ -1,21 +1,19 @@
-from logging import DEBUG
-from fastapi.params import Form
-from fastapi import FastAPI, Request, Response, staticfiles
+from fastapi import FastAPI, Request, staticfiles
 from fastapi.param_functions import Depends
-from fastapi.responses import RedirectResponse, JSONResponse
+from fastapi.responses import JSONResponse
 from fastapi.templating import Jinja2Templates
-from fastapi_jwt_auth.auth_jwt import AuthJWT
-from sqlalchemy.sql.functions import current_user
 from app.routers import user, posts
 from app.config import database
 from app.utils.posts import get_posts
 from fastapi_jwt_auth.exceptions import AuthJWTException
+import pathlib
 
+path_to_app = pathlib.Path('app').resolve().parent
 app = FastAPI()
-app.mount("/static", staticfiles.StaticFiles(directory="app/static"), name="static")
+app.mount("/static", staticfiles.StaticFiles(directory=str(path_to_app) + "/app/static"), name="static")
 app.include_router(user.router)
 app.include_router(posts.router)
-template_folder = Jinja2Templates('app/templates')
+template_folder = Jinja2Templates(str(path_to_app) + "/app/templates")
 
 
 @app.on_event("startup")
@@ -68,8 +66,8 @@ async def create_post(request: Request):
 @app.exception_handler(AuthJWTException)
 async def authjwt_exception_handler(request: Request, error: AuthJWTException):
     return JSONResponse(
-        status_code=error.status_code,
-        content={"detail": error.message}
+        status_code=401,
+        content={"detail": "unauhtorized"}
     )
     
 

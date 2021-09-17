@@ -11,18 +11,18 @@ import base64
 router = APIRouter()
 
 
-@router.post("/post", response_model=PostDetailsBase, status_code=201)
+@router.post("/posts", response_model=PostDetailsBase, status_code=201)
 async def create_post(post: PostBase, authorize: AuthJWT = Depends()):
     authorize.jwt_required()
     current_user_email = authorize.get_jwt_subject()
     current_user_info = await database.fetch_one(select([user.table_of_users.c.id, user.table_of_users.c.nickname])
                                                  .select_from(user.table_of_users).where(user.table_of_users.c.email == current_user_email))
-    if dict(post)['images']:
-        for file in dict(post)['images']:
+    if not post.image is None:
+        for file in post.image:
             image_hash_name = hashlib.sha256((current_user_email + file['filename']).encode('utf-8')).hexdigest() + '.jpg'
             with open('app/static/img/' + image_hash_name, mode='wb') as new_img:
                 new_img.write(base64.b64decode(file['data']))
-    post.images = '/img/' + image_hash_name
+        post.images = '/img/' + image_hash_name
     post = await post_utils.create_post(post, dict(current_user_info))
     return post
 
@@ -34,7 +34,7 @@ async def get_posts():
     return {"total_count": total_cout, "results": posts}
 
 
-@router.get("/post/{post_id}", response_model=PostDetailsBase)
+@router.get("/posts/{post_id}", response_model=PostDetailsBase)
 async def get_post(post_id: int):
     return await post_utils.get_post(post_id)
 
@@ -49,7 +49,7 @@ async def my_posts(authorize: AuthJWT = Depends()):
 
 
 
-@router.put("/post/{post_id}", response_model=PostDetailsBase)
+@router.put("/posts/{post_id}", response_model=PostDetailsBase)
 async def update_post(post_id: int, post_data: PostBase, authorize: AuthJWT = Depends()):
     authorize.jwt_required()
     current_user_email = authorize.get_jwt_subject()
@@ -74,7 +74,7 @@ async def update_post(post_id: int, post_data: PostBase, authorize: AuthJWT = De
     return await post_utils.get_post(post_id)
 
 
-@router.delete('/post/{post_id}')
+@router.delete('/posts/{post_id}')
 async def delete_post(post_id: int, authorize: AuthJWT = Depends()):
     authorize.jwt_required()
     current_user_email = authorize.get_jwt_subject()
@@ -87,13 +87,16 @@ async def delete_post(post_id: int, authorize: AuthJWT = Depends()):
     raise HTTPException(status_code=403, detail="You don't have access to delete this post")
 
 
-@router.get('/post/{post_id}/author')
+@router.get('/posts/{post_id}/author')
 async def get_post_author(post_id: int, authorize: AuthJWT = Depends()):
     authorize.jwt_required()
     current_user_email = authorize.get_jwt_subject()
     query = select([user.table_of_users.c.id]).select_from(user.table_of_users).where(user.table_of_users.c.email == current_user_email)
     current_user_id = await database.fetch_one(query)
-    if await post_utils.get_posts_author(dict(current_user_id)['id'], post_id):
+    is_user_author = await post_utils.get_posts_author(dict(current_user_id)['id'], post_id)
+    if is_user_author:
         return {'200': 'OK'}
+    elif is_user_author is None:
+        raise HTTPException(404, detail="Post doesn't exist")
     raise HTTPException(403, detail="You aren't after of this post!")
     

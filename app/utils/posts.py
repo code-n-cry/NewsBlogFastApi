@@ -1,5 +1,6 @@
 from datetime import datetime
 from fastapi.exceptions import HTTPException
+from sqlalchemy.sql.functions import user
 from app.config import database
 from app.data.post import table_of_posts
 from app.data.user import table_of_users
@@ -12,7 +13,7 @@ async def create_post(post: posts.PostBase, user):
         table_of_posts.insert().values(
             title=post.title,
             content=post.content,
-            image=post.images,
+            image=post.image,
             creation_date=datetime.now(),
             user_id=user["id"]
         ).returning(
@@ -96,4 +97,6 @@ async def get_posts_author(user_id, post_id):
     query = select([table_of_posts.c.user_id]).select_from(
         table_of_posts).where(table_of_posts.c.id == post_id)
     post_author = await database.fetch_one(query)
-    return user_id == dict(post_author)['user_id']
+    if not isinstance(post_author, None):
+        return user_id == dict(post_author)['user_id']
+    return None
