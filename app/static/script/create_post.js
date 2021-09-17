@@ -29,7 +29,7 @@ create_btn.onclick = function() {
     json_data['title'] = news_title
     json_data['content'] = news_content
     var json_post = JSON.stringify(json_data)
-    fetch('/post', {
+    fetch('/posts', {
         method: 'POST', 
         body: json_post,
         headers: {

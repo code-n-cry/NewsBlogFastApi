@@ -54,7 +54,7 @@
         return response.status
     }).then(function(status) {
         if (status === 200) {
-            fetch(`/post/${current_post_id}/author`).then(
+            fetch(`/posts/${current_post_id}/author`).then(
                 (function(response) {
                     if (response.status === 403) {
                         window.location.href = '/forbidden'
@@ -96,7 +96,7 @@
         json_data['title'] = news_title
         json_data['content'] = news_content
         var json_post = JSON.stringify(json_data)
-        fetch(`/post/${current_post_id}`, {
+        fetch(`/posts/${current_post_id}`, {
             method: 'PUT', 
             body: json_post,
             headers: {
@@ -111,7 +111,7 @@
     var delete_btn = document.getElementById('delete-btn')
     delete_btn.onclick = function() {
         if (window.confirm('Точно хотите удалить?')) {
-            fetch(`/post/${current_post_id}`, {
+            fetch(`/posts/${current_post_id}`, {
                 method: 'DELETE'}).then(function(response) {
                     if (response.status === 200) {
                         window.location.href = '/'
