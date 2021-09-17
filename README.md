@@ -23,7 +23,6 @@ Other used modules:
 </ul><br>
 I didn't developed:
 <ul>
-  <li>More tests</li>
   <li>Change themes</li>
 </ul>
 <br>
