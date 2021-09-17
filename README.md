@@ -13,7 +13,8 @@ Frontend technologies👀:
   <li><b>HTML</b> and <b>CSS</b> of course</li>
 </ul><br>
 Test techonologies📜: 
-  <a href="https://fastapi.tiangolo.com/ru/tutorial/testing/" target="_blank"><b>FastAPI test client</b></a> and <b>PyTest</b><br>
+  <b>HTTPX</b> and <b>PyTest</b><br>
+ <br>
 Other used modules:
 <ul>
   <li><b>Pydantic</b> for data validation</li>
